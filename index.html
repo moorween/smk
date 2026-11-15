@@ -20,7 +20,7 @@
 .hero{min-height:420px;margin-bottom:18px}.hero-art{height:415px}.mini-hero,.ai-hero{margin-bottom:20px}.mini-photo{min-height:275px}.ai-photo{height:335px}.section-title{margin:29px 0 16px}.arch-step{min-height:128px}.step-card{min-height:100px}.module-card{min-height:174px}.module-card p{line-height:1.4}.ai-card{min-height:168px}.ai-card .ico{margin-bottom:8px}.ai-card em{margin-top:8px}.safety-bar{grid-template-columns:repeat(3,1fr)}
 @media(max-width:740px){.hero{min-height:0}.hero-art{height:325px}.ai-photo{height:280px}.safety-bar{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:440px){.safety-bar{grid-template-columns:1fr}}
-/* Show one presentation page at a time; scroll to its end to continue. */
+/* Show one presentation page at a time; navigation by buttons and menu. */
 .page-panel{display:none}
 .page-panel.active{display:block;animation:page-appear .4s ease both}
 @keyframes page-appear{from{opacity:.6;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -101,10 +101,6 @@
 (function(){
   const names=['migration','modules','ai'];
   const labels=['Миграция и интеграции','Программные модули','Искусственный интеллект'];
-  let previousY=0;
-  let scrollLockUntil=0;
-  let switching=false;
-
   function currentIndex(){
     const i=names.indexOf(location.hash.slice(1));
     return i<0?0:i;
@@ -135,9 +131,6 @@
     window.scrollTo(0,0);
     root.style.scrollBehavior=savedBehavior;
 
-    previousY=0;
-    switching=false;
-    scrollLockUntil=Date.now()+950;
     const progress=document.querySelector('.page-progress span');
     if(progress) progress.style.width='0%';
     requestAnimationFrame(()=>{
@@ -145,19 +138,6 @@
     });
   }
 
-  function onScroll(){
-    const y=window.scrollY||document.documentElement.scrollTop||0;
-    const down=y>previousY+1;
-    previousY=y;
-    if(!down||switching||Date.now()<scrollLockUntil||document.body.style.overflow==='hidden')return;
-    const maxY=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
-    if(maxY<=100||y<maxY-8)return;
-    switching=true;
-    const next=names[(currentIndex()+1)%names.length];
-    location.hash='#'+next;
-  }
-
-  window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('hashchange',show);
   show();
 })();</script></body></html>
